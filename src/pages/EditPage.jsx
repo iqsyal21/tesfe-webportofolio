@@ -1,3 +1,4 @@
+import CardInputImage from "../components/CardInputImage";
 import CardInputPortofolio from "../components/CardInputPortofolio";
 import CardInputProfile from "../components/CardInputProfile";
 
@@ -53,6 +54,10 @@ const EditPage = () => {
     <main className="min-h-screen flex justify-center">
       <div className="m-16">
         <div className="w-full lg:w-[56rem] max-w-4xl rounded-2xl">
+          <CardInputImage section="Background Image" keyStorage="bgImage" />
+          <br />
+          <CardInputImage section="Profile Image" keyStorage="profileImage" />
+          <br />
           <CardInputProfile forms={profileForm} />
           <br />
           <CardInputPortofolio forms={portofolioForm} />
