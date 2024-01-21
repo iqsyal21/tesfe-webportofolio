@@ -1,0 +1,197 @@
+import { useEffect, useState } from "react";
+import InputForm from "./InputForm";
+import { FaSave, FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+
+const CardInput = ({ sectionTitle, forms }) => {
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const [notes, setNotes] = useState([]);
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [newTitle, setNewTitle] = useState("");
+  const [newDescription, setNewDescription] = useState("");
+
+  useEffect(() => {
+    const storedNotes = JSON.parse(localStorage.getItem("notes")) || [];
+    setNotes(storedNotes);
+  }, []);
+
+  const addNote = (newNote) => {
+    const updatedNotes = [...notes, newNote];
+    setNotes(updatedNotes);
+    localStorage.setItem("notes", JSON.stringify(updatedNotes));
+  };
+
+  const editNote = () => {
+    if (selectedNote !== null && newTitle && newDescription) {
+      const updatedNotes = [...notes];
+      updatedNotes[selectedNote] = { title: newTitle, description: newDescription };
+      setNotes(updatedNotes);
+      localStorage.setItem("notes", JSON.stringify(updatedNotes));
+      setSelectedNote(null);
+      setNewTitle("");
+      setNewDescription("");
+    }
+  };
+
+  const deleteNote = (index) => {
+    const updatedNotes = [...notes];
+    updatedNotes.splice(index, 1);
+    setNotes(updatedNotes);
+    localStorage.setItem("notes", JSON.stringify(updatedNotes));
+    setSelectedNote(null);
+    setNewTitle("");
+    setNewDescription("");
+  };
+
+  return (
+    <div className="card w-full max-w-4xl bg-base-100 shadow-xl">
+      {/* <div className="card-body">
+        <h2 className="card-title underline mb-4">{sectionTitle}</h2>
+        {forms.map((item, index) => (
+          <InputForm
+            key={index}
+            placeholder={item.placeholder}
+            type={item.type}
+            height={item.height}
+            isEditMode={isEditMode}
+          />
+        ))}
+        <div className="card-actions justify-end">
+          {isEditMode ? (
+            <button className="btn btn-outline btn-info" onClick={() => setIsEditMode(false)}>
+              Save
+              <FaSave className="text-lg" />
+            </button>
+          ) : (
+            <>
+              <button className="btn btn-outline btn-warning" onClick={() => setIsEditMode(true)}>
+                Edit
+                <FaEdit className="text-lg" />
+              </button>
+              <button className="btn btn-outline btn-error">
+                Delete
+                <MdDelete className="text-lg" />
+              </button>
+            </>
+          )}
+        </div>
+      </div> */}
+
+<ul>
+        {notes.map((note, index) => (
+          <li key={index}>
+            <strong>{note.title}</strong>
+            <p>{note.description}</p>
+            <button className="btn btn-warning" onClick={() => setSelectedNote(index)}>Edit</button>
+            <button className="btn btn-error" onClick={() => deleteNote(index)}>Delete</button>
+          </li>
+        ))}
+      </ul>
+      {selectedNote !== null && (
+        <div>
+          <input
+            type="text"
+            placeholder="New Title"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+          />
+          <textarea
+            placeholder="New Description"
+            value={newDescription}
+            onChange={(e) => setNewDescription(e.target.value)}
+          />
+          <button onClick={editNote}>Save Changes</button>
+        </div>
+      )}
+      <button
+        className="btn btn-info"
+        onClick={() => {
+          const title = prompt("Enter a new note title:");
+          const description = prompt("Enter a new note description:");
+          addNote({ title, description });
+        }}
+      >
+        Add Note
+      </button>
+    </div>
+  );
+};
+
+export default CardInput;
+
+
+
+----------------------
+
+
+
+import { useEffect, useState } from "react";
+import InputForm from "./InputForm";
+import { FaSave, FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+
+const CardInput = ({ sectionTitle, forms }) => {
+  const [profileData, setProfileData] = useState({});
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    // Simpan data ke localStorage atau kirim ke backend API
+    localStorage.setItem("profileData", JSON.stringify(profileData));
+    setIsEditing(false);
+  };
+
+  useEffect(() => {
+    const storedProfileData = localStorage.getItem("profileData");
+
+    if (storedProfileData) {
+      setProfileData(JSON.parse(storedProfileData));
+    }
+  }, []);
+
+  return (
+    <div>
+      {isEditing ? (
+        <form onSubmit={handleFormSubmit}>
+          <label>Name:</label>
+          <input
+            type="text"
+            value={profileData.name}
+            onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+          />
+          <br />
+
+          <label>Email:</label>
+          <input
+            type="text"
+            value={profileData.email}
+            onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+          />
+          <br />
+
+          <button className="btn btn-info" type="submit">
+            Save
+          </button>
+        </form>
+      ) : (
+        <div>
+          <h1>{profileData.name}</h1>
+          <p>Email: {profileData.email}</p>
+          <button className="btn btn-warning" onClick={handleEditClick}>
+            Edit
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CardInput;
+
+
